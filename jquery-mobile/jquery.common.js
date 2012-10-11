@@ -81,10 +81,10 @@ function listaProdDB(tx) {
 			j=1;
 			$.each(data, function(i,item){					
 					if (j/2 == 0) {
-						output.append('<li style="clear:"right;"><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+this["immagine"]+'" alt="'+this["nome"]+'"  /><br />'+this["nome"]+'</li>');
+						output.append('<li style="clear:"right;"><a href="javascript:getDettProd('+this["id"]+');"><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+this["immagine"]+'" alt="'+this["nome"]+'"  /><br />'+this["nome"]+'</a></li>');
 						j=1;
 					} else {
-						output.append('<li><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+this["immagine"]+'" alt="'+this["nome"]+'"  /><br />'+this["nome"]+'</li>');
+						output.append('<li><a href="javascript:getDettProd('+this["id"]+');"><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+this["immagine"]+'" alt="'+this["nome"]+'"  /><br />'+this["nome"]+'</a></li>');
 					}
 					j++;
 					//var desc = this["descrizione"].substring(0,255);
@@ -123,14 +123,52 @@ function querySuccess(tx, results) {
 	j=1;
 	for (var i=0; i<len; i++){
 		if (j/2 == 0) {
-			output.append('<li style="clear:"right;"><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+results.rows.item(i).immagine+'" alt="'+results.rows.item(i).nome+'"  /><br />'+results.rows.item(i).nome+'</li>');
+			output.append('<li style="clear:"right;"><a href="#" onclick="javascript:getDettProd('+results.rows.item(i).id+');"><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+results.rows.item(i).immagine+'" alt="'+results.rows.item(i).nome+'"  /><br />'+results.rows.item(i).nome+'</a></li>');
 			j=1;
 		} else {
-			output.append('<li><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+results.rows.item(i).immagine+'" alt="'+results.rows.item(i).nome+'"  /><br />'+results.rows.item(i).nome+'</li>');
+			output.append('<li><a href="#" onclick="javascript:getDettProd('+results.rows.item(i).id+');"><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+results.rows.item(i).immagine+'" alt="'+results.rows.item(i).nome+'"  /><br />'+results.rows.item(i).nome+'</a></li>');
 		}
 		j++;
 		
 	}
+}
+
+//--------------------------------------------------------------//
+// DETTAGLIO PRODOTTI
+//
+function getDettProd(id) {
+	var db = window.openDatabase("EllisMobile", "1.0", "Ellis Mobile", 200000);
+	//db.transaction(tx.executeSql('SELECT * FROM TPRODOTTI where ID='+id, [], querySuccessDettProd, errorCB), errorCB);
+	db.transaction(function(tx)
+	{
+	tx.executeSql('SELECT * FROM TPRODOTTI where ID='+id, [],querySuccessDettProd, errorCB)
+	});
+	
+}
+
+// Query the success callback
+//
+function querySuccessDettProd(tx, results) {
+	var output = $('#dett-prod');
+	output.empty();
+	var len = results.rows.length;
+	for (var i=0; i<len; i++){
+		$('<div id="menu-prod"><a href="javascript:backButton();"><< Lista Prodotti</div>').appendTo($('#dett-prod'));
+		$('<div id="dett-prod-img"><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+results.rows.item(i).immagine+'" alt="'+results.rows.item(i).nome+'"  /></div><div id="dett-prod-txt"><h2>'+results.rows.item(i).nome+'</h2>'+results.rows.item(i).descrizione+'</div>').appendTo($('#dett-prod'));
+						
+	}
+}
+
+function backButton() {
+	var output = $('#dett-prod');
+	output.empty();
+	output.append('<ul id="lista-prod"></ul>');
+	var db = window.openDatabase("EllisMobile", "1.0", "Ellis Mobile", 200000);
+	//db.transaction(tx.executeSql('SELECT * FROM TPRODOTTI where ID='+id, [], querySuccessDettProd, errorCB), errorCB);
+	db.transaction(function(tx)
+	{
+	tx.executeSql('SELECT * FROM TPRODOTTI', [],querySuccess, errorCB)
+	});
 }
 
 // Transaction error callback
