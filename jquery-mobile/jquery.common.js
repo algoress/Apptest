@@ -6,43 +6,7 @@
 var language_root = 'it';
 document.addEventListener("deviceready", onDeviceReady, false);
 
-// TROVO LA LISTA PRODOTTI
-//
-function listaProdDB(tx) {
-	var output = $('#lista-prod');
-	$.ajax({
-		url: 'http://test.vision121.it/appPhoneGap/ext/findprod-'+language_root+'.php',
-		dataType: 'jsonp',
-		jsonp: 'jsoncallback',
-		timeout: 5000,
-		success: function(data, status){
-			//alert("success prod");
-			
-			tx.executeSql('DROP TABLE IF EXISTS TPRODOTTI');
-			tx.executeSql('CREATE TABLE IF NOT EXISTS TPRODOTTI (id integer primary key, nome text, descrizione text, immagine text)');
-			output.empty();
-			$.each(data, function(i,item){
-					output.append('<li><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+this["immagine"]+'" alt="'+this["nome"]+'"  /><br />'+this["nome"]+'</li>');
-					//var desc = this["descrizione"].substring(0,255);
-					var desc = this["descrizione"];
-					
-					tx.executeSql('INSERT INTO TPRODOTTI (id, nome,immagine,descrizione) VALUES ('+this["id"]+', "'+this["nome"]+'", "'+this["immagine"]+'", "'+desc+'")');
-					//tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
-			});
-		},
-		error: function(){
-			//alert("error");
-			output.text('C\'è un errore nel caricamento dei dati.');
-				navigator.notification.confirm(
-					'Qualcosa non va. Vuoi riprovare?',
-					yourCallback,
-					'Errore',
-					'No,Si'
-				);
 
-		}
-	});
-}
 //---------------------------------------------------------------//
 //TROVO DATI HOMEPAGE
 //
@@ -61,9 +25,9 @@ function homepageDB(tx) {
 			tx.executeSql('CREATE TABLE IF NOT EXISTS THOME (id integer primary key, titolo text, immagine text)');
 			outputhome.empty();
 			$.each(data, function(i,item){
-					
+					//alert(this["immagine"]);
 					content.css("background-image","http://test.vision121.it/appPhoneGap/_files/immagini/"+this["immagine"]+"");
-					content.css("background-position","center");
+					//content.css("background-position","center");
 					outputhome.append(''+this["titolo"]+'');
 					
 					tx.executeSql('INSERT INTO THOME (id, titolo,immagine) VALUES ('+this["id"]+', "'+this["titolo"]+'", "'+this["immagine"]+'")');
@@ -99,6 +63,51 @@ function homepageSelectSuccess(tx, results) {
 }
 
 //--------------------------------------------------------------//
+// TROVO LA LISTA PRODOTTI
+//
+function listaProdDB(tx) {
+	var output = $('#lista-prod');
+	$.ajax({
+		url: 'http://test.vision121.it/appPhoneGap/ext/findprod-'+language_root+'.php',
+		dataType: 'jsonp',
+		jsonp: 'jsoncallback',
+		timeout: 5000,
+		success: function(data, status){
+			//alert("success prod");
+			
+			tx.executeSql('DROP TABLE IF EXISTS TPRODOTTI');
+			tx.executeSql('CREATE TABLE IF NOT EXISTS TPRODOTTI (id integer primary key, nome text, descrizione text, immagine text)');
+			output.empty();
+			j=1;
+			$.each(data, function(i,item){					
+					if (j/2 == 0) {
+						output.append('<li style="clear:"right;"><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+this["immagine"]+'" alt="'+this["nome"]+'"  /><br />'+this["nome"]+'</li>');
+						j=1;
+					} else {
+						output.append('<li><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+this["immagine"]+'" alt="'+this["nome"]+'"  /><br />'+this["nome"]+'</li>');
+					}
+					j++;
+					//var desc = this["descrizione"].substring(0,255);
+					var desc = this["descrizione"];
+					
+					tx.executeSql('INSERT INTO TPRODOTTI (id, nome,immagine,descrizione) VALUES ('+this["id"]+', "'+this["nome"]+'", "'+this["immagine"]+'", "'+desc+'")');
+					//tx.executeSql('INSERT INTO DEMO (id, data) VALUES (2, "Second row")');
+			});
+		},
+		error: function(){
+			//alert("error");
+			output.text('C\'è un errore nel caricamento dei dati.');
+				navigator.notification.confirm(
+					'Qualcosa non va. Vuoi riprovare?',
+					yourCallback,
+					'Errore',
+					'No,Si'
+				);
+
+		}
+	});
+}
+
 // Query the database
 //
 function queryDB(tx) {
@@ -111,8 +120,16 @@ function querySuccess(tx, results) {
 	var output = $('#lista-prod');
 	output.empty();
 	var len = results.rows.length;
+	j=1;
 	for (var i=0; i<len; i++){
-		output.append('<li><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+results.rows.item(i).immagine+'" alt="'+results.rows.item(i).nome+'"  /><br />'+results.rows.item(i).nome+'</li>');
+		if (j/2 == 0) {
+			output.append('<li style="clear:"right;"><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+results.rows.item(i).immagine+'" alt="'+results.rows.item(i).nome+'"  /><br />'+results.rows.item(i).nome+'</li>');
+			j=1;
+		} else {
+			output.append('<li><img src="http://test.vision121.it/appPhoneGap/_files/immagini/'+results.rows.item(i).immagine+'" alt="'+results.rows.item(i).nome+'"  /><br />'+results.rows.item(i).nome+'</li>');
+		}
+		j++;
+		
 	}
 }
 

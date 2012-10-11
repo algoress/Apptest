@@ -9,22 +9,12 @@ body {
 	background-image:none!important;
 }
 
-#loading {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 999;
-	background: #000000 url(../img/loading.gif) center center no-repeat;
-}
-
 #header .logo {
 	padding:10px;	
 }
 
 .content {
-	background: url('http://test.vision121.it/appPhoneGap/_img/bg.jpg') no-repeat top left #000000;
+	background-color: #000000;
 	color:#ffffff;
 }
 
@@ -41,28 +31,24 @@ body {
 	background-color:#000000;
 }
 
-.ui-header .ui-btn-right {
-	margin:20% 0 10px 0;
-}
-
 #footerDiv {
 	background-color:#000;
 	width:100%;
 	height:30px;
 	text-align:center;
-	
 }
 
 #footerDiv h4 {
 	color:#ffffff;
-	font-size:medium!important;
+	font-size:small;
+	line-height:30px;
 }
 
 /*HOMEPAGE*/
 #home-cont {
 	width:100%;
 	height:200px;
-	background-color:#000;
+	/*background-color:#000;*/
 }
 
 #txt-home {
@@ -84,6 +70,13 @@ body {
 
 
 /* lista prodotti*/
+#dett-prod {
+	width:100%;
+	margin:0;
+	padding:0;
+	text-align:center;
+}
+
 #lista-prod ul {
 	margin:0;
 	padding:0;
@@ -91,11 +84,11 @@ body {
 }
 
 #lista-prod li {
-	margin:0 5px 0 5px;
-	padding:5px;
+	margin:5px 5px 10px 0px;
+	padding:5px 5px 5px 5px;
 	list-style:none;
 	float:left;
-	width:100px;
+	width:25%;
 	text-align:center;
 	border-top:1px solid #212121;
 	border-right:1px solid #212121;
@@ -109,8 +102,8 @@ body {
 
 /*DETT PROD*/
 #menu-prod {
-	width:98%;
-	margin:1%;
+	width:100%;
+	margin:10px;
 	float:left;
 	font-size:3em;
 	text-shadow:#CCC 1px 1px;
